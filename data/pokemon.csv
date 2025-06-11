@@ -1,0 +1,17 @@
+name,type1,type2,hp,attack1,attack1_type,attack1_power,attack2,attack2_type,attack2_power,image_path
+Bulbasaur,Grass,Poison,45,Tackle,Normal,40,Vine Whip,Grass,45,bulbasaur.png
+Charmander,Fire,,39,Scratch,Normal,40,Ember,Fire,40,charmander.png
+Squirtle,Water,,44,Tackle,Normal,40,Water Gun,Water,40,squirtle.png
+Pikachu,Electric,,35,Thunder Shock,Electric,40,Quick Attack,Normal,30,pikachu.png
+Gastly,Ghost,Poison,30,Lick,Ghost,30,Spite,Ghost,0,gastly.png
+Meowth,Normal,,40,Scratch,Normal,40,Bite,Dark,60,meowth.png
+Dratini,Dragon,,41,Wrap,Normal,15,Thunder Wave,Electric,0,dratini.png
+Eevee,Normal,,55,Tackle,Normal,40,Quick Attack,Normal,40,eevee.png
+Gogglet,Rock,Ground,80,Tackle,Normal,40,Rock Throw,Rock,50,gogglet.png
+Mewtwo,Psychic,,106,Psycho Cut,Psychic,70,Hyper Beam,Normal,150,mewtwo.png
+Clefairy,Fairy,,70,Double Slap,Normal,15,Metronome,Normal,0,clefairy.png
+Jigglypuff,Fairy,Normal,115,Body Slam,Normal,85,Rollout,Rock,30,jigglypuff.png
+Pidgey,Normal,Flying,40,Tackle,Normal,40,Quick Attack,Normal,40,pidgey.png
+Metapod,Bug,,50,Tackle,Normal,40,Struggle Bug,Bug,50,metapod.png
+Lapras,Water,Ice,130,Body Slam,Normal,85,Ice Beam,Ice,90,lapras.png
+Articuno,Ice,Flying,90,Peck,Normal,35,Ice Beam,Ice,90,articuno.png
