@@ -21,7 +21,6 @@ pokeminimax-ia/
 │   └── pokemon.py      # Modelos de datos y efectividades
 └── ui/                 # Interfaces de usuario
     ├── __init__.py
-    ├── console_ui.py   # Interfaz de línea de comandos
     └── graphic_ui.py   # Interfaz gráfica con Pygame
 ```
 
@@ -55,12 +54,7 @@ pokeminimax-ia/
 
 ### 3.2 Interfaces de Usuario (ui)
 
-#### 3.2.1 Interfaz de Consola (console_ui.py)
-- **Interacción por Texto**: Permite jugar mediante línea de comandos.
-- **Selección de Pokémon**: Entrada de texto para elegir Pokémon.
-- **Visualización de Estados**: Muestra información del combate en texto.
-
-#### 3.2.2 Interfaz Gráfica (graphic_ui.py)
+#### 3.2.1 Interfaz Gráfica (graphic_ui.py)
 - **Motor Gráfico**: Utiliza Pygame para renderizar el combate.
 - **Selector de Pokémon**: Implementa un carrusel visual para seleccionar Pokémon.
 - **Animaciones**: Efectos visuales como la animación de la barra de vida.
@@ -70,7 +64,6 @@ pokeminimax-ia/
 
 1. **Inicio**: El usuario ejecuta main.py y selecciona el modo de juego.
 2. **Selección de Pokémon**: 
-   - En la interfaz de consola: Ingresa nombres de Pokémon.
    - En la interfaz gráfica: Utiliza el carrusel para seleccionar Pokémon.
 3. **Combate**:
    - Los jugadores y la IA se alternan en turnos para atacar.
@@ -134,40 +127,13 @@ pip install -r requirements.txt
 python main.py
 ```
 
-### 6.4 Modos de Juego
+### 6.4 Modo de Juego
 
-1. **Modo Consola**: Interacción por línea de comandos.
-2. **Modo Gráfico**: Interfaz con Pygame (recomendado para mejor experiencia).
+- **Modo Gráfico**: Interfaz con Pygame (recomendado para mejor experiencia).
 
-## 7. Ejemplos de Uso
+## 7. Ejemplo de Uso
 
-### 7.1 Modo Consola
-
-```
-===== Pokeminmax =====
-1. Jugar en consola
-2. Jugar con interfaz gráfica
-Elige una opción: 1
-
-¡Bienvenido a Pokeminmax!
-
-Elige tu Pokémon (por ejemplo: Pikachu): Pikachu
-Elige el Pokémon de la IA (por ejemplo: Charizard): Bulbasaur
-
-================ ESTADO DEL COMBATE ================
-
-Tu Pokémon: Pikachu (PS: 105/105)
-Pokémon IA: Bulbasaur (PS: 135/135)
-
-Elige un ataque:
-1. Thunder Shock (electric, Poder: 40)
-2. Quick Attack (normal, Poder: 30)
-Ataque (1-4): 1
-
-👉 Pikachu usó Thunder Shock! Causó 40 de daño.
-```
-
-### 7.2 Modo Gráfico
+### 7.1 Modo Gráfico
 
 <div style="display: flex; justify-content: center; align-items: center; gap: 12px;">
   <img src="./images/interfazpokemon.png" alt="Interfaz" style="width: 70hv; max-width: 600px;">
