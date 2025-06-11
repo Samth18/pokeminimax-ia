@@ -111,11 +111,11 @@ El sistema replica la mecánica de Pokémon donde ciertos tipos son efectivos co
 
 ### 6.1 Requisitos
 
-```
-colorama
-typing-extensions
-pygame
-```
+Los requisitos principales del proyecto son:
+
+- **colorama**: Permite imprimir texto coloreado en la terminal, mejorando la experiencia en la interfaz de consola.
+- **typing-extensions**: Proporciona compatibilidad con nuevas características de tipado para versiones antiguas de Python.
+- **pygame**: Biblioteca para desarrollar videojuegos en Python, utilizada para la interfaz gráfica del simulador.
 
 ### 6.2 Instalación
 
@@ -170,7 +170,7 @@ Ataque (1-4): 1
 ### 7.2 Modo Gráfico
 
 <div style="display: flex; justify-content: center; align-items: center; gap: 12px;">
-  <img src="/home/samth0/Documentos/U/2025-I/IA/pokeminimax-ia/data/images/interfazpokemon.png" alt="Interfaz" style="width: 70hv; max-width: 600px;">
+  <img src="./images/interfazpokemon.png" alt="Interfaz" style="width: 70hv; max-width: 600px;">
 </div>
 
 El modo gráfico ofrece:
@@ -193,5 +193,6 @@ El proyecto está bajo la Licencia MIT. Desarrollado por:
 - Joseph David Herrera Libreros
 - Juan David Cuéllar López
 - Samuel Escobar Rivera
+- César David Peñaranda Melo
 
 ---
