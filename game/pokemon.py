@@ -10,7 +10,7 @@ from dataclasses import dataclass
 PokemonType = Literal[
     'normal', 'fire', 'water', 'electric', 'grass', 
     'ice', 'fighting', 'poison', 'ground', 'flying',
-    'psychic', 'bug', 'rock', 'ghost', 'dragon'
+    'psychic', 'bug', 'rock', 'ghost', 'dragon', 'dark'
 ]
 
 # --------------------------
@@ -20,7 +20,7 @@ PokemonType = Literal[
 class Attack:
     name: str
     type: PokemonType
-    power: int  # 10-100 como indica el proyecto
+    power: int
 
 @dataclass
 class Pokemon:
@@ -30,7 +30,8 @@ class Pokemon:
     current_hp: int
     attacks: List[Attack]
     image: Optional[pygame.Surface] = None
-    sprite_pos: Tuple[int, int] = (0, 0)  # Para spritesheets
+    sprite_pos: Tuple[int, int] = (0, 0)
+    card_image: Optional[pygame.Surface] = None  # NUEVO
 
 # --------------------------
 # Tabla de Efectividad Simplificada
@@ -68,23 +69,29 @@ class PokemonLoader:
         self.pokemon_db: Dict[str, Pokemon] = self._load_db()
 
     def _ensure_directories(self):
-        """Crea directorios necesarios si no existen"""
         self.images_dir.mkdir(parents=True, exist_ok=True)
 
     def _load_image(self, image_name: str) -> Optional[pygame.Surface]:
-        """Carga imagen optimizada para Pygame"""
         try:
             image_path = self.images_dir / image_name
             if image_path.exists():
-                img = pygame.image.load(str(image_path))
-                return img.convert_alpha() if img.get_alpha() else img.convert()
+                return pygame.image.load(str(image_path))
+            return None
+        except (pygame.error, FileNotFoundError) as e:
+            print(f"[WARNING] No se pudo cargar imagen {image_name}: {e}")
+            return None
+
+    def _load_image_from_subdir(self, subfolder: str, image_name: str) -> Optional[pygame.Surface]:
+        try:
+            image_path = self.images_dir / subfolder / image_name
+            if image_path.exists():
+                return pygame.image.load(str(image_path))
             return None
         except (pygame.error, FileNotFoundError) as e:
             print(f"[WARNING] No se pudo cargar imagen {image_name}: {e}")
             return None
 
     def _load_db(self) -> Dict[str, Pokemon]:
-        """Carga la base de datos desde CSV"""
         pokemon_db = {}
         
         try:
@@ -92,20 +99,21 @@ class PokemonLoader:
                 reader = csv.DictReader(file)
                 
                 for row in reader:
-                    # Filtro por 1era generación
                     if int(row.get('generation', '1')) != 1:
                         continue
                     
-                    # Procesar tipos
                     types = [row['type1'].lower()]
                     if row.get('type2'):
                         types.append(row['type2'].lower())
+
+                    # Carga imágenes principales y de tarjeta
+                    main_image_name = row.get('image', f"{row['name'].lower()}.png")
+                    card_image_name = row.get('card_image', f"{row['name'].lower()}_card.png")
                     
-                    # Crear Pokémon
                     pokemon_db[row['name'].lower()] = Pokemon(
                         name=row['name'],
                         types=types,
-                        max_hp=int(row['hp']) * 3,  # HP amplificado
+                        max_hp=int(row['hp']) * 3,
                         current_hp=int(row['hp']) * 3,
                         attacks=[
                             Attack(
@@ -119,7 +127,8 @@ class PokemonLoader:
                                 power=int(row['attack2_power'])
                             )
                         ],
-                        image=self._load_image(row.get('image', f"{row['name'].lower()}.png")),
+                        image=self._load_image(main_image_name),
+                        card_image=self._load_image_from_subdir("cards", card_image_name),
                         sprite_pos=(int(row.get('sprite_x', 0)), int(row.get('sprite_y', 0)))
                     )
                     
@@ -130,7 +139,6 @@ class PokemonLoader:
         return pokemon_db
 
     def _create_fallback_db(self) -> Dict[str, Pokemon]:
-        """Base de datos mínima de respaldo"""
         return {
             'pikachu': Pokemon(
                 name='Pikachu',
@@ -141,23 +149,12 @@ class PokemonLoader:
                     Attack(name='Impactrueno', type='electric', power=40),
                     Attack(name='Rapidez', type='normal', power=30)
                 ],
-                image=self._load_image('pikachu.png')
-            ),
-            'charizard': Pokemon(
-                name='Charizard',
-                types=['fire', 'flying'],
-                max_hp=120,
-                current_hp=120,
-                attacks=[
-                    Attack(name='Lanzallamas', type='fire', power=50),
-                    Attack(name='Garra Dragón', type='dragon', power=40)
-                ],
-                image=self._load_image('charizard.png')
+                image=self._load_image('pikachu.png'),
+                card_image=self._load_image_from_subdir("cards", "pikachu_card.png")
             )
         }
 
     def get_pokemon(self, name: str) -> Pokemon:
-        """Obtiene una copia del Pokémon con HP al máximo"""
         if name.lower() not in self.pokemon_db:
             available = ", ".join([p.name for p in self.pokemon_db.values()])
             raise ValueError(f"Pokémon {name} no encontrado. Disponibles: {available}")
@@ -170,11 +167,11 @@ class PokemonLoader:
             current_hp=original.max_hp,
             attacks=[Attack(**a.__dict__) for a in original.attacks],
             image=original.image,
+            card_image=original.card_image,
             sprite_pos=original.sprite_pos
         )
 
     def get_all_pokemon_names(self) -> List[str]:
-        """Lista de nombres de Pokémon disponibles"""
         return [p.name for p in self.pokemon_db.values()]
 
 # --------------------------
@@ -186,20 +183,12 @@ pokemon_loader = PokemonLoader()
 # API Pública
 # --------------------------
 def get_pokemon(name: str) -> Pokemon:
-    """Obtiene un Pokémon por nombre"""
     return pokemon_loader.get_pokemon(name)
 
 def get_all_pokemon_names() -> List[str]:
-    """Devuelve lista de nombres disponibles"""
     return pokemon_loader.get_all_pokemon_names()
 
 def calculate_damage(attacker: Pokemon, defender: Pokemon, attack: Attack) -> int:
-    """
-    Calcula daño según reglas del proyecto:
-    - Efectividad de tipos
-    - Sin precisión (siempre acierta)
-    - Sin ataques de estado
-    """
     effectiveness = 1.0
     for defender_type in defender.types:
         effectiveness *= EFFECTIVITY_TABLE.get(attack.type, {}).get(defender_type, 1.0)
@@ -208,32 +197,4 @@ def calculate_damage(attacker: Pokemon, defender: Pokemon, attack: Attack) -> in
     return damage if effectiveness != 0 else 0
 
 def is_fainted(pokemon: Pokemon) -> bool:
-    """Verifica si el Pokémon está debilitado"""
     return pokemon.current_hp <= 0
-
-# --------------------------
-# Ejemplo de Uso
-# --------------------------
-if __name__ == "__main__":
-    # Ejemplo para probar el módulo
-    pygame.init()
-    screen = pygame.display.set_mode((800, 600))
-    
-    try:
-        pikachu = get_pokemon("Pikachu")
-        charizard = get_pokemon("Charizard")
-        
-        print("\nPokémon cargados exitosamente:")
-        print(f"- {pikachu.name} (HP: {pikachu.current_hp}/{pikachu.max_hp})")
-        print(f"- {charizard.name} (HP: {charizard.current_hp}/{charizard.max_hp})")
-        
-        # Ejemplo de renderizado
-        if pikachu.image:
-            screen.blit(pikachu.image, (100, 100))
-            pygame.display.flip()
-            pygame.time.wait(2000)  # Mostrar por 2 segundos
-        
-    except Exception as e:
-        print(f"\nError durante la prueba: {e}")
-    finally:
-        pygame.quit()
