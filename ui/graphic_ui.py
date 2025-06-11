@@ -7,14 +7,14 @@ pygame.init()
 
 # === Fuentes pixeladas ===
 PIXEL_FONT = pygame.font.Font(str(Path(__file__).parent.parent / "data" / "fonts" / "pixel.ttf"), 16)
-BIG_PIXEL_FONT = pygame.font.Font(str(Path(__file__).parent.parent / "data" / "fonts" / "pixel.ttf"), 28)
+BIG_FONT = pygame.font.Font(str(Path(__file__).parent.parent / "data" / "fonts" / "pixel.ttf"), 28)
 
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 700
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Pokeminmax - Batalla Pokémon")
 
-# === Fondo ===
+# === Fondo de batalla ===
 def load_battle_bg():
     path = Path(__file__).parent.parent / "data" / "images" / "arena.png"
     if path.exists():
@@ -40,10 +40,10 @@ def mostrar_carrusel(pokemons, ya_elegido=None, etapa="jugador"):
     total = len(pokemons)
 
     while True:
-        screen.fill((240, 248, 255))
+        screen.fill((204, 238, 255))
 
         titulo = "ELIGE TU POKÉMON" if etapa == "jugador" else "ELIGE EL POKÉMON DE LA IA"
-        title_surface = BIG_PIXEL_FONT.render(titulo, True, (0, 0, 0))
+        title_surface = BIG_FONT.render(titulo, True, (0, 0, 0))
         screen.blit(title_surface, ((SCREEN_WIDTH - title_surface.get_width()) // 2, 30))
 
         p = pokemons[index]
@@ -53,7 +53,7 @@ def mostrar_carrusel(pokemons, ya_elegido=None, etapa="jugador"):
             img = pygame.transform.scale(p.card_image, (200, 280))
             screen.blit(img, (center_x - 100, center_y - 140))
 
-        name_text = BIG_PIXEL_FONT.render(p.name.upper(), True, (0, 0, 0))
+        name_text = BIG_FONT.render(p.name.upper(), True, (0, 0, 0))
         screen.blit(name_text, (center_x - name_text.get_width() // 2, center_y + 160))
 
         for i, tipo in enumerate(p.types):
@@ -61,9 +61,10 @@ def mostrar_carrusel(pokemons, ya_elegido=None, etapa="jugador"):
             tipo_text = PIXEL_FONT.render(tipo.upper(), True, color)
             screen.blit(tipo_text, (center_x - tipo_text.get_width() // 2, center_y + 190 + i * 32))
 
+        # Botones
         btn_left = pygame.Rect(80, center_y - 40, 60, 60)
         btn_right = pygame.Rect(SCREEN_WIDTH - 140, center_y - 40, 60, 60)
-        btn_select = pygame.Rect(center_x - 80, SCREEN_HEIGHT - 80, 160, 40)
+        btn_select = pygame.Rect(center_x - 100, SCREEN_HEIGHT - 90, 200, 40)
 
         pygame.draw.polygon(screen, (100, 100, 100),
             [(btn_left.right, btn_left.top), (btn_left.right, btn_left.bottom), (btn_left.left, btn_left.centery)])
@@ -90,19 +91,19 @@ def mostrar_carrusel(pokemons, ya_elegido=None, etapa="jugador"):
 def render_battle(screen, battle: BattleSystem, anim_state: dict):
     screen.blit(BATTLE_BG, (0, 0))
 
-    _render_pokemon(screen, battle.state.player_pokemon, (140, 380), flip=False)
-    _render_pokemon(screen, battle.state.ai_pokemon, (660, 300), flip=True)
+    _render_pokemon(screen, battle.state.player_pokemon, (120, 320), flip=False)
+    _render_pokemon(screen, battle.state.ai_pokemon, (660, 320), flip=True)
 
     _animate_hp(battle, anim_state)
-    _render_hp_bar(screen, battle.state.player_pokemon, anim_state["player_hp"], (140, 350))
-    _render_hp_bar(screen, battle.state.ai_pokemon, anim_state["ai_hp"], (660, 270))
+    _render_hp_bar(screen, battle.state.player_pokemon, anim_state["player_hp"], (120, 290))
+    _render_hp_bar(screen, battle.state.ai_pokemon, anim_state["ai_hp"], (660, 290))
 
     if battle.state.last_move:
         move_text = PIXEL_FONT.render(battle.state.last_move, True, (255, 255, 0))
-        screen.blit(move_text, (SCREEN_WIDTH // 2 - move_text.get_width() // 2, 30))
+        screen.blit(move_text, (SCREEN_WIDTH // 2 - move_text.get_width() // 2, 20))
 
     if battle.state.game_over:
-        win_text = BIG_PIXEL_FONT.render(f"¡GANADOR: {battle.state.winner.upper()}!", True, (255, 0, 0))
+        win_text = BIG_FONT.render(f"¡GANADOR: {battle.state.winner.upper()}!", True, (255, 0, 0))
         screen.blit(win_text, (SCREEN_WIDTH // 2 - win_text.get_width() // 2, 650))
 
     if not battle.state.game_over and battle.state.current_turn == 'player':
@@ -110,12 +111,12 @@ def render_battle(screen, battle: BattleSystem, anim_state: dict):
 
 def _render_pokemon(screen, pokemon, pos, flip=False):
     if pokemon.image:
-        img = pygame.transform.scale(pokemon.image, (200, 200))
+        img = pygame.transform.scale(pokemon.image, (180, 180))
         if flip:
             img = pygame.transform.flip(img, True, False)
         screen.blit(img, pos)
         name = PIXEL_FONT.render(pokemon.name.upper(), True, (0, 0, 0))
-        screen.blit(name, (pos[0] + 100 - name.get_width() // 2, pos[1] + 210))
+        screen.blit(name, (pos[0] + 90 - name.get_width() // 2, pos[1] + 190))
 
 def _render_hp_bar(screen, pokemon, display_hp, pos):
     x, y = pos
@@ -125,7 +126,6 @@ def _render_hp_bar(screen, pokemon, display_hp, pos):
     pygame.draw.rect(screen, (0, 0, 0), (x-2, y-2, bar_w+4, bar_h+4), 2)
     pygame.draw.rect(screen, (255, 0, 0), (x, y, int(bar_w * ratio), bar_h))
     pygame.draw.rect(screen, (230, 230, 230), (x + int(bar_w * ratio), y, bar_w - int(bar_w * ratio), bar_h))
-
     ps_text = PIXEL_FONT.render(f"{pokemon.current_hp}/{pokemon.max_hp}", True, (255, 255, 255))
     screen.blit(ps_text, (x + bar_w // 2 - ps_text.get_width() // 2, y - 20))
 
@@ -139,16 +139,21 @@ def _animate_hp(battle: BattleSystem, anim_state):
         anim_state["ai_hp"] = max(battle.state.ai_pokemon.current_hp, anim_state["ai_hp"])
 
 def render_attack_buttons(screen, attacks):
-    btn_w, btn_h = 180, 36
     padding = 18
-    x = 50
-    y_start = 500
+    btn_h = 36
+    start_x = SCREEN_WIDTH - 300  # margen derecho
+    y_start = SCREEN_HEIGHT - (len(attacks) * (btn_h + padding)) - 30
+
     for i, atk in enumerate(attacks):
-        rect = pygame.Rect(x, y_start + i * (btn_h + padding), btn_w, btn_h)
+        text_surface = PIXEL_FONT.render(atk.name.upper(), True, (0, 0, 0))
+        text_width = text_surface.get_width()
+        btn_w = text_width + 30  # margen horizontal
+
+        rect = pygame.Rect(start_x, y_start + i * (btn_h + padding), btn_w, btn_h)
         pygame.draw.rect(screen, (100, 200, 255), rect, border_radius=8)
         pygame.draw.rect(screen, (0, 0, 0), rect, 2)
-        text = PIXEL_FONT.render(atk.name.upper(), True, (0, 0, 0))
-        screen.blit(text, (rect.centerx - text.get_width() // 2, rect.centery - text.get_height() // 2))
+        screen.blit(text_surface, (rect.centerx - text_width // 2, rect.centery - text_surface.get_height() // 2))
+
 
 def combate_grafico():
     pokemons = [get_pokemon(name) for name in get_all_pokemon_names()]
@@ -169,19 +174,18 @@ def combate_grafico():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
             elif event.type == pygame.MOUSEBUTTONDOWN and battle.state.current_turn == 'player' and not battle.state.game_over:
                 mx, my = pygame.mouse.get_pos()
-                x = 50
-                y_start = 500
-                btn_w, btn_h, padding = 180, 36, 18
+                btn_w, btn_h = 180, 36
+                padding = 18
+                start_x = SCREEN_WIDTH - btn_w - 60
+                y_start = SCREEN_HEIGHT - (len(battle.get_available_attacks()) * (btn_h + padding)) - 30
                 for i in range(len(battle.get_available_attacks())):
-                    rect = pygame.Rect(x, y_start + i * (btn_h + padding), btn_w, btn_h)
+                    rect = pygame.Rect(start_x, y_start + i * (btn_h + padding), btn_w, btn_h)
                     if rect.collidepoint(mx, my):
                         battle.execute_move(i)
                         if not battle.state.game_over and battle.state.current_turn == 'ai':
                             pygame.time.set_timer(IA_TURNO_EVENT, 1500, loops=1)
-
             elif event.type == IA_TURNO_EVENT and not battle.state.game_over and battle.state.current_turn == 'ai':
                 battle.execute_move(-1)
                 pygame.time.set_timer(IA_TURNO_EVENT, 0)
