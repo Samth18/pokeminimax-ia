@@ -167,10 +167,12 @@ El proyecto está bajo la Licencia MIT. Desarrollado por:
 - Samuel Escobar Rivera
 - César David Peñaranda Melo
 
----
+
 ## 10. Conclusiones
 Pokeminmax es un proyecto que lleva a cabo exitosamente un simulador de luchas Pokémon, sobresaliendo por incorporar una inteligencia artificial fundamentada en el algoritmo Minimax con poda alfa-beta.  Mediante una interfaz gráfica creada con Pygame, los usuarios tienen la posibilidad de vivir luchas estratégicas, eligiendo sus Pokémon y enfrentándose a un adversario controlado por la Inteligencia Artificial.
 El sistema de juego replica mecánicas fundamentales de Pokémon, como la efectividad de tipos, el cálculo de daño y el combate por turnos. La estructura modular del proyecto, dividida en componentes para la lógica del juego (game) y la interfaz de usuario (ui), facilita su comprensión y mantenimiento.
 
 Si bien el proyecto cumple con sus objetivos principales, la documentación también identifica áreas de mejora, como la ampliación de la base de datos de Pokémon, el refinamiento de las animaciones y la posible inclusión de mecánicas de juego más avanzadas (estados alterados, etc.). Estas limitaciones abren la puerta a futuras expansiones y mejoras que podrían enriquecer aún más la experiencia de juego.
 En conclusión, Pokeminmax no solo muestra el uso efectivo de algoritmos de Inteligencia Artificial en el marco de un juego, sino que también proporciona un fundamento sólido para un simulador de combates Pokémon divertido y práctico.
+
+---
