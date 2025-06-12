@@ -1,6 +1,12 @@
 ## 1. Descripción General
 
-Pokeminmax es un simulador de combates Pokémon que implementa inteligencia artificial a través del algoritmo Minimax con poda alfa-beta. El proyecto permite a los usuarios seleccionar su propio Pokémon y enfrentarse a un oponente controlado por la IA en un sistema de combate por turnos inspirado en los juegos originales de Pokémon.
+Pokeminmax es un simulador de luchas Pokémon que integra inteligencia artificial a través de la aplicación del algoritmo Minimax con poda alfa-beta, un método frecuentemente empleado en juegos de estrategia para tomar decisiones acertadas.  El propósito de este proyecto es recrear una experiencia de lucha por turnos parecida a la de los videojuegos tradicionales de Pokémon, permitiendo a los usuarios seleccionar su propio Pokémon y luchar contra un adversario controlado por la Inteligencia Artificial.
+
+El sistema de combate está concebido para analizar diversas oportunidades de ataque y defensa, previendo las acciones del adversario y eligiendo la acción más beneficiosa para la Inteligencia Artificial en cada turno.  El algoritmo Minimax permite que la Inteligencia Artificial simule diversos escenarios potenciales, evaluando el efecto de cada acción de acuerdo a un sistema de valoración fundamentado en puntos de vida aún disponibles, tipos de ataques y beneficios estratégicos.  La poda alfa-beta mejora este procedimiento al disminuir considerablemente la cantidad de nodos a examinar en el árbol de decisiones, incrementando así el rendimiento sin comprometer la exactitud en la toma de decisiones.
+
+Además, Pokeminmax cuenta con una interfaz de usuario fácil y comprensible, donde el jugador tiene la posibilidad de elegir su Pokémon inicial, visualizar los puntos de vida, los ataques existentes y los resultados de cada turno.  Esta aplicación no solo evidencia el uso práctico de técnicas de inteligencia artificial en un ambiente de juego, sino que también actúa como un recurso didáctico para comprender el funcionamiento de los algoritmos de búsqueda y decisión en entornos interactivos y dinámicos.
+
+El proyecto representa una combinación de entretenimiento y programación, perfecta para aquellos que desean investigar cómo la Inteligencia Artificial puede emplearse para modelar comportamientos inteligentes en juegos de turno rotativo.
 
 ## 2. Estructura del Proyecto
 
