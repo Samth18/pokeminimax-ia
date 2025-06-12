@@ -1,11 +1,11 @@
 import pygame
 from game.pokemon import get_all_pokemon_names, get_pokemon
 from game.battle import BattleSystem
+from game.player import AIPlayer  # ← Importa la IA real con Minimax
 from pathlib import Path
 
 pygame.init()
 
-# === Fuentes pixeladas ===
 PIXEL_FONT = pygame.font.Font(str(Path(__file__).parent.parent / "data" / "fonts" / "pixel.ttf"), 16)
 BIG_FONT = pygame.font.Font(str(Path(__file__).parent.parent / "data" / "fonts" / "pixel.ttf"), 28)
 
@@ -14,7 +14,6 @@ SCREEN_HEIGHT = 700
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Pokeminmax - Batalla Pokémon")
 
-# === Fondo de batalla ===
 def load_battle_bg():
     path = Path(__file__).parent.parent / "data" / "images" / "arena.png"
     if path.exists():
@@ -25,7 +24,6 @@ def load_battle_bg():
 
 BATTLE_BG = load_battle_bg()
 
-# === Colores por tipo ===
 TYPE_COLORS = {
     'fire': (255, 100, 0), 'water': (0, 150, 255), 'electric': (255, 255, 0),
     'grass': (0, 200, 80), 'normal': (200, 200, 200), 'bug': (153, 204, 0),
@@ -41,7 +39,6 @@ def mostrar_carrusel(pokemons, ya_elegido=None, etapa="jugador"):
 
     while True:
         screen.fill((204, 238, 255))
-
         titulo = "ELIGE TU POKÉMON" if etapa == "jugador" else "ELIGE EL POKÉMON DE LA IA"
         title_surface = BIG_FONT.render(titulo, True, (0, 0, 0))
         screen.blit(title_surface, ((SCREEN_WIDTH - title_surface.get_width()) // 2, 30))
@@ -61,7 +58,6 @@ def mostrar_carrusel(pokemons, ya_elegido=None, etapa="jugador"):
             tipo_text = PIXEL_FONT.render(tipo.upper(), True, color)
             screen.blit(tipo_text, (center_x - tipo_text.get_width() // 2, center_y + 190 + i * 32))
 
-        # Botones
         btn_left = pygame.Rect(80, center_y - 40, 60, 60)
         btn_right = pygame.Rect(SCREEN_WIDTH - 140, center_y - 40, 60, 60)
         btn_select = pygame.Rect(center_x - 100, SCREEN_HEIGHT - 90, 200, 40)
@@ -90,7 +86,6 @@ def mostrar_carrusel(pokemons, ya_elegido=None, etapa="jugador"):
 
 def render_battle(screen, battle: BattleSystem, anim_state: dict):
     screen.blit(BATTLE_BG, (0, 0))
-
     _render_pokemon(screen, battle.state.player_pokemon, (120, 320), flip=False)
     _render_pokemon(screen, battle.state.ai_pokemon, (660, 320), flip=True)
 
@@ -141,19 +136,17 @@ def _animate_hp(battle: BattleSystem, anim_state):
 def render_attack_buttons(screen, attacks):
     padding = 18
     btn_h = 36
-    start_x = SCREEN_WIDTH - 300  # margen derecho
+    start_x = SCREEN_WIDTH - 300
     y_start = SCREEN_HEIGHT - (len(attacks) * (btn_h + padding)) - 30
 
     for i, atk in enumerate(attacks):
         text_surface = PIXEL_FONT.render(atk.name.upper(), True, (0, 0, 0))
         text_width = text_surface.get_width()
-        btn_w = text_width + 30  # margen horizontal
-
+        btn_w = text_width + 30
         rect = pygame.Rect(start_x, y_start + i * (btn_h + padding), btn_w, btn_h)
         pygame.draw.rect(screen, (100, 200, 255), rect, border_radius=8)
         pygame.draw.rect(screen, (0, 0, 0), rect, 2)
         screen.blit(text_surface, (rect.centerx - text_width // 2, rect.centery - text_surface.get_height() // 2))
-
 
 def combate_grafico():
     pokemons = [get_pokemon(name) for name in get_all_pokemon_names()]
@@ -186,8 +179,12 @@ def combate_grafico():
                         battle.execute_move(i)
                         if not battle.state.game_over and battle.state.current_turn == 'ai':
                             pygame.time.set_timer(IA_TURNO_EVENT, 1500, loops=1)
+
             elif event.type == IA_TURNO_EVENT and not battle.state.game_over and battle.state.current_turn == 'ai':
-                battle.execute_move(-1)
+                ai_player = AIPlayer(battle.ai_pokemon)
+                attack = ai_player.choose_attack(battle.player_pokemon)
+                index = battle.ai_pokemon.attacks.index(attack)
+                battle.execute_move(index)
                 pygame.time.set_timer(IA_TURNO_EVENT, 0)
 
         pygame.display.flip()

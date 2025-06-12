@@ -1,37 +1,29 @@
-# player.py
-
-from abc import ABC, abstractmethod
 from typing import List
-from .pokemon import Pokemon, Attack
-from .minimax import minimax_decision  # Asumimos que existe esta función
+from .pokemon import Pokemon, Attack, calculate_damage
+from .minimax import minimax_decision
 
-class Player(ABC):
+class Player:
     def __init__(self, pokemon: Pokemon):
         self.pokemon = pokemon
 
-    @abstractmethod
     def choose_attack(self, opponent_pokemon: Pokemon) -> Attack:
-        pass
-
-    def is_defeated(self) -> bool:
-        return self.pokemon.current_hp <= 0
+        raise NotImplementedError("Este método debe ser implementado por las subclases.")
 
 class HumanPlayer(Player):
     def choose_attack(self, opponent_pokemon: Pokemon) -> Attack:
-        print(f"\nTu Pokémon: {self.pokemon.name} (PS: {self.pokemon.current_hp}/{self.pokemon.max_hp})")
-        print("Elige un ataque:")
-        for idx, atk in enumerate(self.pokemon.attacks):
-            print(f"{idx + 1}. {atk.name} ({atk.type}, Poder: {atk.power})")
+        print("\nTus ataques disponibles:")
+        for i, atk in enumerate(self.pokemon.attacks):
+            print(f"{i + 1}. {atk.name} - Poder: {atk.power}, Tipo: {atk.type}")
 
         while True:
             try:
-                choice = int(input("Ataque (1-4): ")) - 1
-                if 0 <= choice < len(self.pokemon.attacks):
-                    return self.pokemon.attacks[choice]
+                seleccion = int(input("Selecciona un ataque (1-4): ")) - 1
+                if 0 <= seleccion < len(self.pokemon.attacks):
+                    return self.pokemon.attacks[seleccion]
                 else:
-                    print("Opción inválida.")
+                    print("Índice fuera de rango. Intenta de nuevo.")
             except ValueError:
-                print("Ingresa un número válido.")
+                print("Entrada inválida. Ingresa un número.")
 
 class AIPlayer(Player):
     def choose_attack(self, opponent_pokemon: Pokemon) -> Attack:
